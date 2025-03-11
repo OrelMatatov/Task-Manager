@@ -17,7 +17,7 @@ const getUserTasks = (userId) => {
         db.all(query, [userId], (err, tasks) => {
             if(err){
                 console.error(`Error retrieving tasks for user_id ${userId}:`, err.message);
-                return reject(new Error(`Failed to retrieve tasks for user ${userId}`));
+                return reject(`Database error: Unable to retrieve tasks for user ${userId}` );
             }
             
             resolve(tasks);
@@ -35,7 +35,7 @@ const getAllUsersTasks = () => {
         db.all(query, [], (err, allTasks) => {
             if(err){
                 console.error(`Error retrieving tasks`, err.message);
-                return reject(new Error(`Failed to retrieve tasks`));
+                return reject(`Database error: Unable to retrieve tasks of all users` );
             }
             
             resolve(allTasks);
@@ -54,7 +54,7 @@ const getTaskById = (taskId) => {
         db.all(query, [taskId], (err, task) => {
             if(err){
                 console.error(`Error retrieving task for task_id ${taskId}:`, err.message);
-                return reject(new Error(`Failed to retrieve tasks for user ${taskId}`));
+                return reject(`Database error: Failed to retrieve task with id of ${taskId}` );
             }
             
             resolve(task);
@@ -69,7 +69,10 @@ const addTask = (user_id, task_name, due_date) => {
             VALUES  (?, ?, ?, ?)
         `
         db.run(query, [user_id, task_name, 1, due_date], (err) => {
-            if(err) return reject(err.message);
+            if(err){
+                console.error("Error adding task:", err.message);
+                return reject(`Database error: Failed to add task for user ${user_id}`);
+            }
             resolve({message: "Added task successfully"})
         })
     })
@@ -104,7 +107,8 @@ const editTask = (task_id, task_name, due_date, status_id) => {
 
         db.run(query, params, (err) => {
             if (err) {
-                return reject(err.message);
+                console.error("Error edit task:", err.message);
+                return reject(`Database error: Failed to edit task with id pf ${task_id}`);
             }
             resolve({ message: 'Task updated successfully' });
         });
@@ -114,7 +118,10 @@ const editTask = (task_id, task_name, due_date, status_id) => {
 const deleteTask = (taskId) => {
     const query = `DELETE FROM tasks WHERE task_id = ?`
     db.run(query, [taskId], (err) => {
-        if(err) return reject(err.message);
+        if(err) {
+            console.error("Error adding task:", err.message);
+            return reject(`Database error: Failed to delete task with id of ${taskId}`);
+        }
         resolve({message: "Task deleted successfully"});
     })
 }

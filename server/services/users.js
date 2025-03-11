@@ -16,7 +16,7 @@ const registerUser = (first_name, last_name, email, password) => {
             db.run(query, [first_name, last_name, email, hashedPassword], (err) => {
                 if(err){
                     console.error("Error When trying insert new user", err.message);
-                    return reject(err.message);
+                    return reject("Database error: Failed to add user");
                 } 
                 resolve({message: "User registered successfully"})
             })
@@ -30,7 +30,7 @@ const loginUser = (email, password) => {
         db.get(query, [email], (err, user) => {
             if(err){
                 console.error("Error checking email existance ", err.message)
-                return reject(err.message);
+                return reject("Database error: Failed to get users info");
             }
 
             if(!user){
@@ -38,7 +38,7 @@ const loginUser = (email, password) => {
             } 
 
             bcrypt.compare(password, user.password, (err, result) => {
-                if(err) return reject(err);
+                if(err) return reject("Hashing error: Failed to compare between 2 hashes");
                 if(result) 
                     resolve({user: user, message: "Login successful"})
                 else
@@ -55,7 +55,7 @@ const checkEmailExistance = (email) => {
         db.get(query, [email], (err, user) => {
             if(err) {
                 console.error("Error checking email existance ", err.message)
-                return reject(err.message);
+                return reject("Database error: Failed to check user email existance");
             }
             if(!user) 
                 resolve({uniqueEmail: true})
@@ -71,7 +71,7 @@ const getAllUsers = () => {
         db.all(query, [], (err, allUsers) => {
             if(err){
                 console.error(`Error retrieving users`, err.message);
-                return reject(new Error(`Failed to retrieve users`));
+                return reject("Database error: Failed to retrieve users");
             }
             
             resolve(allUsers);
@@ -90,7 +90,7 @@ const getUserById = (userId) => {
         db.get(query, [userId], (err, user) => {
             if(err){
                 console.error("Error trying get a user ", err.message);
-                return reject(err.message);
+                return reject(`Database error: Failed to get user with id of ${userId}`);
             }
             if(!user) return reject("User not found");
             resolve(user)
@@ -98,10 +98,4 @@ const getUserById = (userId) => {
     })
 } 
 
-/* registerUser("Micheal", "Jordan" ,"MJ@walla.com", "123456")
-    .then(res => console.log(res))
-    .catch(err => console.log(err)); */
-
-loginUser("MJ@walla.com", "123456")
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
+module.exports = {registerUser, loginUser, checkEmailExistance, getUserById, getAllUsers}
