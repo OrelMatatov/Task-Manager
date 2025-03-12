@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 
 // Connect to DB
-const db = new sqlite3.Database('../db/taskManager.db', sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database('./db/taskManager.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) return console.log(err.message);
 });
 
@@ -116,13 +116,16 @@ const editTask = (task_id, task_name, due_date, status_id) => {
 }
 
 const deleteTask = (taskId) => {
-    const query = `DELETE FROM tasks WHERE task_id = ?`
-    db.run(query, [taskId], (err) => {
-        if(err) {
-            console.error("Error adding task:", err.message);
-            return reject(`Database error: Failed to delete task with id of ${taskId}`);
-        }
-        resolve({message: "Task deleted successfully"});
+    return new Promise((resolve, reject) => {
+        const query = `DELETE FROM tasks WHERE task_id = ?`
+        db.run(query, [taskId], (err) => {
+            if(err) {
+                console.error("Error deleting task:", err.message);
+                return reject(`Database error: Failed to delete task with id of ${taskId}`);
+            }
+            resolve({message: "Task deleted successfully"});
+        })
+    
     })
 }
 

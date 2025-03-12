@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const sqlite3 = require('sqlite3').verbose();
 
 // Connect to DB
-const db = new sqlite3.Database('../db/taskManager.db', sqlite3.OPEN_READWRITE, (err) => {
+const db = new sqlite3.Database('./db/taskManager.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) return console.log(err.message);
 });
 
@@ -34,15 +34,15 @@ const loginUser = (email, password) => {
             }
 
             if(!user){
-                return resolve("User not found with this email");
+                return resolve({message: `User with email ${email} does not exist`});
             } 
 
             bcrypt.compare(password, user.password, (err, result) => {
                 if(err) return reject("Hashing error: Failed to compare between 2 hashes");
                 if(result) 
-                    resolve({user: user, message: "Login successful"})
+                    resolve({user ,message: "Login successful"})
                 else
-                    resolve("Incorrect password");
+                    resolve({message: "Incorrect password"});
             })  
         })
     })
@@ -58,9 +58,9 @@ const checkEmailExistance = (email) => {
                 return reject("Database error: Failed to check user email existance");
             }
             if(!user) 
-                resolve({uniqueEmail: true})
+                resolve({emailExist: false})
             else
-                resolve({uniqueEmail: false})
+                resolve({emailExist: true})
         })
     })
 }
@@ -98,4 +98,26 @@ const getUserById = (userId) => {
     })
 } 
 
-module.exports = {registerUser, loginUser, checkEmailExistance, getUserById, getAllUsers}
+const editUser = (userId, first_name, last_name, email) => {
+    const query = `UPDATE users SET first_name = ?, last_name = ?, email = ? WHERE user_id = ?`
+    db.run(query, [first_name, last_name, email, userId], (err) => {
+        if (err) {
+            console.error("Error edit user:", err.message);
+            return reject(`Database error: Failed to edit user with id pf ${userId}`);
+        }
+        resolve({ message: 'User updated successfully' });
+    });
+}
+
+const deleteUser = (userId) => {
+    const query = `DELETE FROM users WHERE user_id = ?`
+    db.run(query, [userId], (err) => {
+        if(err) {
+            console.error("Error delete user:", err.message);
+            return reject(`Database error: Failed to delete user with id of ${userId}`);
+        }
+        resolve({message: "user deleted successfully"});
+    })
+}
+
+module.exports = {registerUser, loginUser, checkEmailExistance, getUserById, getAllUsers, editUser, deleteUser}
