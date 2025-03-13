@@ -99,24 +99,29 @@ const getUserById = (userId) => {
 } 
 
 const editUser = (userId, first_name, last_name, email) => {
-    const query = `UPDATE users SET first_name = ?, last_name = ?, email = ? WHERE user_id = ?`
-    db.run(query, [first_name, last_name, email, userId], (err) => {
-        if (err) {
-            console.error("Error edit user:", err.message);
-            return reject(`Database error: Failed to edit user with id pf ${userId}`);
-        }
-        resolve({ message: 'User updated successfully' });
-    });
+    return new Promise((resolve, reject) => {
+        const query = `UPDATE users SET first_name = ?, last_name = ?, email = ? WHERE user_id = ?`
+        db.run(query, [first_name, last_name, email, userId], (err) => {
+            if (err) {
+                console.error("Error edit user:", err.message);
+                return reject(`Database error: Failed to edit user with id pf ${userId}`);
+            }
+            resolve({ message: 'User updated successfully' });
+        });
+    })
+    
 }
 
 const deleteUser = (userId) => {
-    const query = `DELETE FROM users WHERE user_id = ?`
-    db.run(query, [userId], (err) => {
-        if(err) {
-            console.error("Error delete user:", err.message);
-            return reject(`Database error: Failed to delete user with id of ${userId}`);
-        }
-        resolve({message: "user deleted successfully"});
+    return new Promise((resolve, reject) => {
+        const query = `DELETE FROM users WHERE user_id = ?`
+        db.run(query, [userId], (err) => {
+            if(err) {
+                console.error("Error delete user:", err.message);
+                return reject(`Database error: Failed to delete user with id of ${userId}`);
+            }
+            resolve({message: "user deleted successfully"});
+        })
     })
 }
 

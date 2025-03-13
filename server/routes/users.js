@@ -13,8 +13,8 @@ router.route('/user/:userId')
 
 router.post('/register', controller.registerUser)
 
-router.get('/login', controller.loginUser)
+router.post('/login', controller.loginUser)
 
-router.get('/checkEmailExistance', controller.checkEmailExistance)
+router.post('/checkEmailExistance', controller.checkEmailExistance)
 
 module.exports = router;
