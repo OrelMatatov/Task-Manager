@@ -7,6 +7,7 @@ const LoginPage = () => {
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("info"); 
     const fetcher = useFetcher();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (fetcher.data) {
@@ -14,8 +15,9 @@ const LoginPage = () => {
             setMessage(message);
             if (user) {
                 setMessageType("success");
-                // Optional: Redirect after login success
-                // setTimeout(() => navigate(`/tasks`, { state: { user } }), 1500);
+                setTimeout(() => 
+                    navigate(`/tasks`, { state: { user } })
+                , 1500);
             } else {
                 setMessageType("error");
             }
