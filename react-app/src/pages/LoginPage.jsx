@@ -1,46 +1,27 @@
-import React,{ useState } from "react";
+import React,{ useState, useEffect } from "react";
 import { Container, TextField, Button, Typography, Box} from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useFetcher, Form  } from "react-router-dom";
 
 const LoginPage = () => {
 
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("info"); 
+    const fetcher = useFetcher();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    const navigate = useNavigate();
-
-    const handleLogIn = async(e) => {
-        e.preventDefault();
-
-        const res = await fetch('/api/users/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({email, password})
-          })
-        
-        if(res.ok){
-            const data = await res.json();
-            setMessage(data.message);
-            if(data.user){
-                //successfull log in - user exist
+    useEffect(() => {
+        if (fetcher.data) {
+            const { message, user, error } = fetcher.data;
+            setMessage(message);
+            if (user) {
                 setMessageType("success");
-                setTimeout(() => {
-                    navigate(`/tasks`, {state: {user: data.user}})
-                }, 1500)
-
-            }
-    
-            else{
-                console.log("User does not exist");
-                setMessageType("error")
+                // Optional: Redirect after login success
+                // setTimeout(() => navigate(`/tasks`, { state: { user } }), 1500);
+            } else {
+                setMessageType("error");
             }
         }
-    };
+    }, [fetcher.data]);
+
 
     return (
         <Container maxWidth="sm">
@@ -48,13 +29,13 @@ const LoginPage = () => {
             <Typography variant="h4" gutterBottom>
             Log In
             </Typography>
-            <form onSubmit={handleLogIn}>
+            <fetcher.Form method="post" action="/login">
             <TextField
                 fullWidth
                 label="Email"
                 variant="outlined"
                 margin="normal"
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
             />
             <TextField
                 fullWidth
@@ -62,12 +43,12 @@ const LoginPage = () => {
                 type="password"
                 variant="outlined"
                 margin="normal"
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
             />
             <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                 {messageType === "success" ? "LOGIN IN..." : "LOG IN"}
             </Button>
-            </form>
+            </fetcher.Form>
 
             {message && (
             <Typography
@@ -90,8 +71,8 @@ const LoginPage = () => {
     
 }
 
-const loginAction = async({ request }) => {
-    const data = await request.formData;
+export const loginAction = async({ request }) => {
+    const data = await request.formData();
     const email = data.get("email");
     const password = data.get("password");
 
