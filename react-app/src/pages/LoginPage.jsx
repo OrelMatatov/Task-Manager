@@ -11,14 +11,15 @@ const LoginPage = () => {
 
     useEffect(() => {
         if (fetcher.data) {
-            const { message, user, error } = fetcher.data;
+            const {message, user, error } = fetcher.data;
             setMessage(message);
             if (user) {
                 setMessageType("success");
                 setTimeout(() => 
                     navigate(`/tasks`, { state: { user } })
                 , 1500);
-            } else {
+            } 
+            else {
                 setMessageType("error");
             }
         }
@@ -78,20 +79,29 @@ export const loginAction = async({ request }) => {
     const email = data.get("email");
     const password = data.get("password");
 
-    const res = await fetch('/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-    });
-
-    if(res.ok){
-        const data = await res.json();
-        return data;
+    if(!email || !password){
+        return {message: "Please fill in all fields"}
     }
 
-    return {error: "bad API request"}
+    try{
+        const res = await fetch('/api/users/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+    
+        if(res.ok){
+            const data = await res.json();
+            return data;
+        }
+    
+    }
+    catch(err){
+        return err
+    }
+    
 }
 
 export default LoginPage
