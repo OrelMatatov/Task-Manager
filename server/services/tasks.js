@@ -129,4 +129,14 @@ const deleteTask = (taskId) => {
     })
 }
 
-module.exports = {getAllUsersTasks, getUserTasks, getTaskById, addTask, editTask, deleteTask}
+const getStatuses = () => {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM status`
+        db.all(query, [], (err, statuses) => {
+            if(err) return reject(err);
+            resolve(statuses);
+        })
+    })
+}
+
+module.exports = {getAllUsersTasks, getUserTasks, getTaskById, addTask, editTask, deleteTask, getStatuses}

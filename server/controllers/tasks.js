@@ -68,6 +68,16 @@ const deleteTask = async(req, res) => {
     }
 }
 
-module.exports = {getUserTasks, getAllUsersTasks, getTaskById, addTask, editTask, deleteTask};
+const getStatuses = async(req, res) => {
+    try{
+        const answer = await service.getStatuses();
+        return res.json(answer)
+    }
+    catch(err){
+        return res.json({error: err})
+    }
+}
+
+module.exports = {getUserTasks, getAllUsersTasks, getTaskById, addTask, editTask, deleteTask, getStatuses};
 
 
