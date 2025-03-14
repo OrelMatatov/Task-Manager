@@ -4,8 +4,45 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
 import TaskStatus from "./TaskStatus";
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 const Task = ({ task }) => {
+
+  const queryClient = useQueryClient();
+
+  const HandleDeleteBtnClick = () => {
+      const confirm = window.confirm('Are you sure you want to delete this task?')
+      if(!confirm) return;
+      mutate();
+  }
+
+  const deleteTask = async() => {
+    try{
+      const answer = await fetch(`/api/tasks/task/${task.task_id}`,{
+        method: 'DELETE'
+      })
+
+      if (!answer.ok) {
+        throw new Error(`Failed to delete task`);
+    }
+      return await answer.json();
+    } 
+    catch(err){
+      throw new Error(err.error)
+    }
+    
+  }
+
+  const { mutate } = useMutation({
+    mutationFn: deleteTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["userTasks"])
+    },
+    onError: (err) => {
+      console.log(err);
+    }
+  })
+
   return (
     <Paper
       elevation={2}
@@ -42,7 +79,7 @@ const Task = ({ task }) => {
       </Tooltip>
 
       <Tooltip title="Delete this task">
-        <IconButton color="error" size="small">
+        <IconButton color="error" size="small" onClick={HandleDeleteBtnClick}>
           <DeleteIcon />
         </IconButton>
       </Tooltip>
