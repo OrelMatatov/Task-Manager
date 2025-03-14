@@ -15,7 +15,7 @@ const TasksPage = () => {
     return (
         <>
         <ProfileMenu user={user}/>
-        <AddTask />
+        <AddTask userId={user.user_id}/>
         <TasksList userId={user.user_id} />
         </>
     )

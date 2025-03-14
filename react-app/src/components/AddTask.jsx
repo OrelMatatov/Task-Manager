@@ -3,16 +3,40 @@ import { TextField, Button, Box } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const AddTask = () => {
+const AddTask = ({ userId }) => {
   const [task, setTask] = useState("");
   const [deadline, setDeadline] = useState(dayjs());
+  const queryClient = useQueryClient();
+
+  const createTask = async(newTask) => {
+    const answer = await fetch('/api/tasks',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newTask)
+    })
+
+    return await answer.json();
+  }
+
+  const { mutate } = useMutation({
+    mutationFn: createTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["userTasks"])
+    }
+  })
 
   const handleSubmit = () => {
     if (!task.trim()) return;
     const formattedDeadline = dayjs(deadline).format("YYYY-MM-DD HH:mm");
-    //onAddTask({ task, deadline: deadline.toISOString() });
-    console.log(task, formattedDeadline)
+    mutate({
+      user_id: userId,
+      task_name: task,
+      due_date: formattedDeadline 
+    })
     setTask("");
     setDeadline(dayjs());
   };
