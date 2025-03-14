@@ -1,29 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { IconButton, Select, MenuItem, Typography, Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 const TaskStatus = ({ status_id, task_id }) => {
     const [statusId, setStatusId] = useState(status_id);
     const [isEditing, setIsEditing] = useState(false);
+    const queryClient = useQueryClient();
 
-    const handleStatusChange = async(e) => {
-      const newStatusId = e.target.value;      
-      const answer = await fetch(`/api/tasks/task/${task_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({status_id: newStatusId})
-      })
-      if(answer.ok){
-        const data = await answer.json();
-        console.log(data.message);
-      }
-      setStatusId(e.target.value);        
-      setIsEditing(false);
-        
-    }
 
     const fetchStatues = async() => {
       try{
@@ -42,12 +26,43 @@ const TaskStatus = ({ status_id, task_id }) => {
 
     const {data} = useQuery({queryKey: ["statuses"], queryFn: fetchStatues})
     
+
+    const changeStatus = async(newStatusId) => {
+      const answer = await fetch(`/api/tasks/task/${task_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({status_id: newStatusId})
+      })
+      return await answer.json();
+  }
+
+    const { mutate } = useMutation({
+      mutationFn: changeStatus,
+      onSuccess: () => {
+        queryClient.invalidateQueries("userTasks")
+      }
+    })
+    
+
+    const handleEditStatusClick = async(e) => {
+      const newStatusId = e.target.value;      
+      mutate(newStatusId);
+      setStatusId(e.target.value);        
+      setIsEditing(false);
+    }
+
+    
+   
+
+    
     return (
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           {isEditing ? (
             <Select
               value={statusId}
-              onChange={handleStatusChange}
+              onChange={handleEditStatusClick}
               size="small"
               autoFocus
               onBlur={() => setIsEditing(false)}
@@ -58,9 +73,10 @@ const TaskStatus = ({ status_id, task_id }) => {
 
             </Select>
           ) : (
-            <Typography variant="body1" sx={{ cursor: "pointer" }}>
-                 {data ? data.find(status => status.status_id === statusId)?.status_name || "Unknown" : "Loading..."}
+            <Typography variant="body1" sx={{ cursor: "pointer", color: statusId === 3 ? "green" :"warning.main" }}>
+              {data ? data.find(status => status.status_id === statusId)?.status_name || "Unknown" : "Loading..."}
             </Typography>
+
           )}
             
             <Tooltip title="Update Task Status">

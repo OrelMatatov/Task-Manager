@@ -20,7 +20,7 @@ const Task = ({ task }) => {
       }}
     >
       {/* Task Name */}
-      <Typography variant="body1" flex={1} sx={{ flex: 1, textAlign: "center" }}>
+      <Typography variant="body1" flex={1} sx={{ flex: 1, textAlign: "center", textDecoration: task.status_id === 3 ? "line-through" : "none"}}>
         <strong>Task: </strong> {task.task_name}
       </Typography>
 
@@ -36,7 +36,7 @@ const Task = ({ task }) => {
 
       {/* Action Buttons - Icons */}
       <Tooltip title="Edit this task">
-        <IconButton color="primary" size="small">
+        <IconButton color="primary" size="small" disabled={task.status_id === 3 ? true : false}>
           <EditIcon />
         </IconButton>
       </Tooltip>
