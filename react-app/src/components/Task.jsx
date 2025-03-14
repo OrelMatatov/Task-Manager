@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import TaskStatus from "./TaskStatus";
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-const Task = ({ task }) => {
+const Task = ({ task, onEdit }) => {
 
   const queryClient = useQueryClient();
 
@@ -73,7 +73,9 @@ const Task = ({ task }) => {
 
       {/* Action Buttons - Icons */}
       <Tooltip title="Edit this task">
-        <IconButton color="primary" size="small" disabled={task.status_id === 3 ? true : false}>
+        <IconButton color="primary" size="small" 
+          disabled={task.status_id === 3 ? true : false}
+          onClick={() => onEdit(task)}>
           <EditIcon />
         </IconButton>
       </Tooltip>
