@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { TextField, Button, Box } from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const AddTask = ({ userId }) => {
   const [task, setTask] = useState("");
-  const [deadline, setDeadline] = useState(dayjs());
+  const [deadline, setDeadline] = useState(dayjs().format("YYYY-MM-DDTHH:mm"));
   const queryClient = useQueryClient();
 
   const createTask = async(newTask) => {
@@ -49,9 +47,9 @@ const AddTask = ({ userId }) => {
       user_id: userId,
       task_name: task,
       due_date: formattedDeadline 
-    })
+    })    
     setTask("");
-    setDeadline(dayjs());
+    setDeadline(dayjs().format("YYYY-MM-DDTHH:mm"));
   };
 
   return (
@@ -66,14 +64,16 @@ const AddTask = ({ userId }) => {
       />
 
       {/* Date-Time Picker */}
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateTimePicker
-          label="Deadline"
-          value={deadline}
-          onChange={setDeadline}
-          slotProps={{ textField: { sx: { minWidth: 220 } } }}
-        />
-      </LocalizationProvider>
+      <TextField
+        label="Deadline"
+        type="datetime-local"
+        value={deadline}
+        onChange={(e) => setDeadline(e.target.value)}
+        InputLabelProps={{
+            shrink: true,
+        }}
+        fullWidth
+    />
 
       {/* Add Button */}
       <Button variant="contained" color="primary" onClick={handleSubmit}>
