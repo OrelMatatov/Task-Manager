@@ -11,21 +11,34 @@ const AddTask = ({ userId }) => {
   const queryClient = useQueryClient();
 
   const createTask = async(newTask) => {
-    const answer = await fetch('/api/tasks',{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newTask)
-    })
+    try{
+      const answer = await fetch('/api/tasks',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newTask)
+      })
 
-    return await answer.json();
+      if(!answer.ok){
+        throw new Error("Failed to add task");
+      }
+      return await answer.json();
+    }
+    catch(err){
+      throw new Error(err.error);
+    }
+    
+
   }
 
   const { mutate } = useMutation({
     mutationFn: createTask,
     onSuccess: () => {
       queryClient.invalidateQueries(["userTasks"])
+    },
+    onError: (err) => {
+      console.log(err);
     }
   })
 
