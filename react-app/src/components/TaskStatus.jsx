@@ -28,14 +28,23 @@ const TaskStatus = ({ status_id, task_id }) => {
     
 
     const changeStatus = async(newStatusId) => {
-      const answer = await fetch(`/api/tasks/task/${task_id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({status_id: newStatusId})
-      })
-      return await answer.json();
+      try{
+        const answer = await fetch(`/api/tasks/task/${task_id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({status_id: newStatusId})
+        })
+        if(!answer.ok){
+          throw new Error("Failed to change task status")
+        }
+        return await answer.json();
+      }
+      catch(err){
+        throw new Error(err.error);
+      }
+      
   }
 
     const { mutate } = useMutation({
