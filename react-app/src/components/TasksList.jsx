@@ -27,7 +27,7 @@ const TasksList = ({ data, isLoading}) => {
         <>
         <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
             {data.map((task, index) => (
-                <Task key={task.id || index} task={task} onEdit={handleOpenEdit}/>
+                <Task key={task.task_id || index} task={task} onEdit={handleOpenEdit}/>
             ))}
         </Box>
 

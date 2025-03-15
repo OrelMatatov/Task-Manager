@@ -9,13 +9,13 @@ const TaskStatus = ({ status_id, task_id }) => {
     const queryClient = useQueryClient();
 
 
-    const fetchStatues = async() => {
+    const fetchStatuses = async() => {
       try{
         const response = await fetch('/api/tasks/statuses');
         if(!response.ok){
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
+          throw new Error(`Error fetching satatuses`);
         }
-        const data = await response.json();        
+        const data = await response.json();
         return data;
       } 
       catch(err){
@@ -24,7 +24,7 @@ const TaskStatus = ({ status_id, task_id }) => {
       
     }
 
-    const {data} = useQuery({queryKey: ["statuses"], queryFn: fetchStatues})
+    const {data} = useQuery({queryKey: ["statuses"], queryFn: fetchStatuses})
     
 
     const changeStatus = async(newStatusId) => {
@@ -64,8 +64,6 @@ const TaskStatus = ({ status_id, task_id }) => {
 
     
    
-
-    
     return (
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           {isEditing ? (
@@ -95,6 +93,8 @@ const TaskStatus = ({ status_id, task_id }) => {
             </Tooltip>
            
         </div>
+
+
       );
 }
 
