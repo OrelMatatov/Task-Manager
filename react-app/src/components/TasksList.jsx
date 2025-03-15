@@ -4,7 +4,7 @@ import Task from "./Task";
 import { Box, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import EditTask from './EditTask';
 
-const TasksList = ({ userId }) => {
+const TasksList = ({ data, isLoading}) => {
 
     const [open, setOpen] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -19,25 +19,7 @@ const TasksList = ({ userId }) => {
         setSelectedTask(null); // Reset selection
     };
 
-    const fetchUserTasks = async() => {
-        try{
-            const response = await fetch(`/api/tasks/userTasks/${userId}`);
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
-            }
-            return await response.json();
-        }
-        catch(err){
-            throw new Error(`Failed to fetch user tasks: ${err.error}`);
-        }
-        
-    }
 
-    const {data, isLoading, error} = useQuery({
-        queryKey: ["userTasks"], 
-        queryFn: fetchUserTasks,
-        staleTime: 5000
-    })
 
     if(isLoading) return <p>Loading...</p>
 
