@@ -12,42 +12,17 @@ const TaskDashboard = ({ userId }) => {
     //Sorting states && Functions
     const [sortOption, setSortOption] = useState("")
 
-    const sortTasksByAscDate = () => {
-        if(filteredTasks == null){
-            setTasks((prevTasks) => {
-                return [...prevTasks].sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
-            });  
-        }
-        else{
-            setFilteredTasks((prevTasks) => {
-                return [...prevTasks].sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
-            });  
-        }
-          
-    }
-
-    const sortTasksByDscDate = () => {
-        if(filteredTasks == null){
-            setTasks((prevTasks) => {
-                return [...prevTasks].sort((a, b) => new Date(b.due_date) - new Date(a.due_date));
-            })
-        }
-        else{
-            setFilteredTasks((prevTasks) => {
-                return [...prevTasks].sort((a, b) => new Date(b.due_date) - new Date(a.due_date));
-            })
-        }
-        
-    }
+    const sortTasks = (order) => {
+        const sortedTasks = [...(filteredTasks ?? tasks)].sort((a, b) => 
+            order === "asc" ? new Date(a.due_date) - new Date(b.due_date) : new Date(b.due_date) - new Date(a.due_date)
+        );
+        filteredTasks ? setFilteredTasks(sortedTasks) : setTasks(sortedTasks);
+    };
 
     const handleSortChange = (e) => {
         setSortOption(e.target.value)
-        if(e.target.value == "deadlineAsc"){
-            sortTasksByAscDate();
-        }
-        else if(e.target.value == "deadlineDesc"){
-            sortTasksByDscDate();
-        }
+        if (e.target.value === "deadlineAsc") sortTasks("asc");
+        else if (e.target.value === "deadlineDesc") sortTasks("desc");
 
     };
 
@@ -108,8 +83,8 @@ const TaskDashboard = ({ userId }) => {
 
     const filterTasksByStatus = () => {
         setUserInFilterByStatusMode(true);
-        setFilteredTasks((prevFilteredTasks) => 
-            (prevFilteredTasks ?? tasks).filter(task => statusFilters[task.status])
+        setFilteredTasks(
+            tasks.filter(task => statusFilters[task.status])
         );
         
     };
@@ -138,14 +113,12 @@ const TaskDashboard = ({ userId }) => {
         setUserInFilterByDeadlineMode(false)
         setFilterOption("");
         setDateFilters({ dueToday: false, dueThisWeek: false, dueNextWeek: false });
+        setFilteredTasks(null)
     };
 
     const handlefilterDatesBtn = () => {
-        /* setShowTasksFilteredByDeadline(true);
-        queryClient.invalidateQueries(["userTasks"]) */
-
         setUserInFilterByDeadlineMode(true);
-        filterReleventDates(filteredTasks || data);
+        filterReleventDates(tasks);
     }
 
     const isDateBetween = (date, startDate, endDate) => {
@@ -156,34 +129,37 @@ const TaskDashboard = ({ userId }) => {
         return dateObj >= startObj && dateObj <= endObj;
     };
 
-    const getDateAfterWeeks = (weeks) => {
+    const getEndOfWeek = (weeksJump, addDays = 0) => {
         const date = new Date();
-        date.setDate(date.getDate() + weeks * 7); // Add weeks * 7 days
-        return date.toISOString().split("T")[0]; // Return date in YYYY-MM-DD format
+        const dayOfWeek = date.getDay(); // 0 (Sunday) to 6 (Saturday)
+        const daysUntilSaturday = 6 - dayOfWeek;
+        
+        date.setDate(date.getDate() + daysUntilSaturday + 7 * weeksJump + addDays);
+        return date.toISOString().split("T")[0];
     };
 
-
     const filterReleventDates = (data) => {
-        const today = new Date().toISOString().split("T")[0];
-        const nextWeek = getDateAfterWeeks(1);
-        const twoWeeksFromNow = getDateAfterWeeks(2);
+
         let filteredData = data.filter((task) => {
-            const taskDate = task.due_date.split(" ")[0];
-            if(dateFilters["dueToday"]) {
-                if(today === taskDate)
-                    return true;
+            const taskDeadline = task.due_date.split(" ")[0];
+            const today = new Date().toISOString().split("T")[0];
+            const endOfThisWeek = getEndOfWeek(0); // 0 means this week
+            const endOfNextWeek = getEndOfWeek(1); // 1 means next week
+            if(dateFilters["dueToday"]){
+                if(today === taskDeadline) return true; 
             }
             if(dateFilters["dueThisWeek"]){
-                if(isDateBetween(taskDate, today, nextWeek))
-                    return true;
+                if(isDateBetween(taskDeadline, today, endOfThisWeek)) return true;
             }
-            if(dateFilters["dueNextWeek"])
-                 return isDateBetween(taskDate, nextWeek, twoWeeksFromNow);
+
+            if(dateFilters["dueNextWeek"]){
+                const startOfNextWeek = getEndOfWeek(0, 1);
+                return isDateBetween(taskDeadline,startOfNextWeek, endOfNextWeek);
+            }
         })
-
         setFilteredTasks(filteredData);
-
     }
+
 
     const handleFilterChange = (event) => {
         setFilterOption(event.target.value);
@@ -217,8 +193,6 @@ const TaskDashboard = ({ userId }) => {
                     filterReleventDates(filteredData)
                 }
                              
-                //reset the sorted tasks by date
-                //clean the code!!!
             }
             return data;
         }
