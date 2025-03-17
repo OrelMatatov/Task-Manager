@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, FormControl, Typography, Select, MenuItem, Checkbox, FormControlLabel, Button } from "@mui/material";
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import TasksList from "./TasksList";
 
 
@@ -8,6 +8,8 @@ const TaskDashboard = ({ userId }) => {
     
     const [tasks, setTasks] = useState([]);
     const [filteredTasks, setFilteredTasks] = useState(null)
+    const [progress, setProgress] = useState(0);
+    const [completedTasks, setCompletedTasks] = useState(0)
 
     //Sorting states && Functions
     const [sortOption, setSortOption] = useState("")
@@ -165,8 +167,15 @@ const TaskDashboard = ({ userId }) => {
         setFilterOption(event.target.value);
         setShowStatusFilter(event.target.value === "status");
         setShowDateFilter(event.target.value === "dates")
+        //reset the non active filter option
         if(event.target.value === "status"){   
             fetchStatusesAndInitTheirCheckboxState();
+            setDateFilters({ dueToday: false, dueThisWeek: false, dueNextWeek: false });
+        }
+        else if(event.target.value === "dates"){
+            setStatusFilters((prev) =>
+                Object.keys(prev).reduce((acc, key) => ({ ...acc, [key]: false }), {})
+            );
         }
     };
 
@@ -178,9 +187,9 @@ const TaskDashboard = ({ userId }) => {
             }
             const data = await response.json();
             setTasks(data)
+            setCompletedTasks(data.filter(task => task.status === "Completed").length);
+
             if(filteredTasks != null){
-                //TODO                
-                //User in filter mode - add to filtered data as well
                 if(userInFilterByStatusMode){
                     setFilteredTasks(() => {
                         return data.filter((task) => {
@@ -278,6 +287,11 @@ const TaskDashboard = ({ userId }) => {
 
         </Box>
             
+        <Box display="flex" flexDirection="column" alignItems="center" mt={3} width="95%">
+            <Typography variant="h6">
+                Completed Tasks: {completedTasks} / {tasks.length}
+            </Typography>
+        </Box>
         <TasksList data={filteredTasks || tasks} isLoading={isLoading} />
 
         
