@@ -70,10 +70,13 @@ const AddTask = ({ userId }) => {
         value={deadline}
         onChange={(e) => setDeadline(e.target.value)}
         InputLabelProps={{
-            shrink: true,
+          shrink: true,
         }}
         fullWidth
-    />
+        inputProps={{
+          min: dayjs().format("YYYY-MM-DDTHH:mm"), // Set min to the current date-time
+        }}
+      />
 
       {/* Add Button */}
       <Button variant="contained" color="primary" onClick={handleSubmit}>
