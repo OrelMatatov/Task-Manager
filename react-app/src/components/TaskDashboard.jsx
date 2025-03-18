@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import TasksList from "./TasksList";
 import NoDataMessage from "./NoDataMessage";
 import CompletedTasksTracker from "./CompletedTasksTracker";
+import TaskReminder from "./TaskReminder";
 
 const TaskDashboard = ({ userId }) => {
   const [selectedFilters, setSelectedFilters] = useState([]);
@@ -307,6 +308,8 @@ const filterReleventDates = (data) => {
             ) : (
             <TasksList data={filteredTasks || tasks} isLoading={isLoading} /> 
         )}
+
+        <TaskReminder tasks={filteredTasks || tasks} />
     </>
   );
 };
