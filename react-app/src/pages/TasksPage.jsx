@@ -2,7 +2,6 @@ import React from 'react'
 import { useLocation } from 'react-router-dom';
 import ProfileMenu from '../components/ProfileMenu';
 import AddTask from '../components/AddTask';
-import TasksList from '../components/TasksList';
 import TaskDashboard from '../components/TaskDashboard';
 
 const TasksPage = () => {
@@ -19,7 +18,9 @@ const TasksPage = () => {
         <ProfileMenu user={user}/>
         <AddTask userId={user.user_id}/>
         <TaskDashboard userId={user.user_id} />
-        </>
+       
+        {/* <Test userId={user.user_id} />    */}     
+ </>
     )
 }
 
