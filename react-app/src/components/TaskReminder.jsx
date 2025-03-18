@@ -10,8 +10,10 @@ const TaskReminder = ({ tasks }) => {
   useEffect(() => {
     const checkDeadlines = () => {
       const now = dayjs();
-      const upcomingTask = tasks.find(task => 
-        dayjs(task.due_date).diff(now, "minutes") <= 5 && dayjs(task.due_date).diff(now, "minutes") > 0
+      const notCompletedTasks = tasks.filter(task => task.status !== "Completed");
+      const upcomingTask = notCompletedTasks.find(task => 
+            dayjs(task.due_date).diff(now, "minutes") <= 5 && 
+            dayjs(task.due_date).diff(now, "minutes") > 0
       );
 
       if (upcomingTask) {
@@ -19,8 +21,7 @@ const TaskReminder = ({ tasks }) => {
         setOpen(true);
       }
     };
-
-    const interval = setInterval(checkDeadlines, 60000); // Check every minute
+    const interval = setInterval(checkDeadlines, 60000); // Check every 1 minute
     return () => clearInterval(interval);
   }, [tasks]);
 
