@@ -25,12 +25,14 @@ const TasksList = ({ data, isLoading}) => {
 
     return (
         <>
+        {/* Tasks Display */}
         <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
             {data.map((task, index) => (
                 <Task key={task.task_id || index} task={task} onEdit={handleOpenEdit}/>
             ))}
         </Box>
 
+        {/* Edit Task Pop Up Window */}    
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
             <DialogTitle>Edit Task</DialogTitle>
             <DialogContent>

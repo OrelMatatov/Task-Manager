@@ -20,11 +20,21 @@ const TaskDashboard = ({ userId }) => {
 
   const [completedTasks, setCompletedTasks] = useState(0)
 
-    const sortTasks = (order) => {
-        const sortedTasks = [...(filteredTasks ?? tasks)].sort((a, b) => 
-            order === "asc" ? new Date(a.due_date) - new Date(b.due_date) : new Date(b.due_date) - new Date(a.due_date)
-        );
-        filteredTasks ? setFilteredTasks(sortedTasks) : setTasks(sortedTasks);
+  const sortTasks = (order) => {
+        let tasksToSort = filteredTasks ? [...filteredTasks] : [...tasks];
+
+        tasksToSort.sort((taskA, taskB) => {
+            const dateA = new Date(taskA.due_date);
+            const dateB = new Date(taskB.due_date);
+
+            if (order === "asc") {
+                return dateA - dateB; 
+            } else {
+                return dateB - dateA; 
+            }
+        });
+
+        filteredTasks ? setFilteredTasks(tasksToSort) : setTasks(tasksToSort);
     };
 
 
@@ -196,29 +206,30 @@ const filterReleventDates = (data) => {
 
   return (
     <>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, marginRight: 15}}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2, marginRight: 5}}>
+            {/* Sort Selection */}
             <Typography variant="h6" sx={{  marginRight:1 }}>Sort By:</Typography>
-                <FormControl sx={{ width: "220px" }}>
-                <Select value={sortOption} onChange={handleSortChange} displayEmpty>
-                    <MenuItem value="" disabled>Select an option</MenuItem>
-                    <MenuItem value="deadlineAsc">Deadline (Ascending)</MenuItem>
-                    <MenuItem value="deadlineDesc">Deadline (Descending)</MenuItem>
-                </Select>
-                </FormControl>
+            <FormControl sx={{ width: "220px" }}>
+            <Select value={sortOption} onChange={handleSortChange} displayEmpty>
+                <MenuItem value="" disabled>Select an option</MenuItem>
+                <MenuItem value="deadlineAsc">Deadline (Ascending)</MenuItem>
+                <MenuItem value="deadlineDesc">Deadline (Descending)</MenuItem>
+            </Select>
+            </FormControl>
             
-
+            {/* Filter Selection */}
             <Typography variant="h6" sx={{ marginRight: 1, marginLeft: 5 }}>Filter By:</Typography>
-                <FormControl sx={{ width: '220px' }}> 
-                <Select
-                    value=""
-                    onChange={handleSelectFilter}
-                    displayEmpty
-                >
-                    <MenuItem value="" disabled>Select an option</MenuItem>
-                    <MenuItem value="Status">Status</MenuItem>
-                    <MenuItem value="Dates">Due To...</MenuItem>
-                </Select>
-                </FormControl>
+            <FormControl sx={{ width: '220px' }}> 
+            <Select
+                value=""
+                onChange={handleSelectFilter}
+                displayEmpty
+            >
+                <MenuItem value="" disabled>Select an option</MenuItem>
+                <MenuItem value="Status">Status</MenuItem>
+                <MenuItem value="Dates">Due To...</MenuItem>
+            </Select>
+            </FormControl>
         </Box>
 
         <Box sx={{ 
@@ -231,7 +242,7 @@ const filterReleventDates = (data) => {
             margin: "0 auto"
             }}>
 
-            {/* Status Section */}
+            {/* Status Filter */}
             {selectedFilters.includes("Status") && statuses.length > 0 && (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, marginTop: 2, justifyContent: "center" }}>
                 {statuses.map((status) => (
@@ -257,6 +268,7 @@ const filterReleventDates = (data) => {
             </Box>
             )}
 
+            {/* Dates Filter */}
             {selectedFilters.includes("Dates") && (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, justifyContent: "center" }}>
                 {["dueToday", "dueThisWeek", "dueNextWeek"].map((deadline, index) => (
@@ -268,10 +280,8 @@ const filterReleventDates = (data) => {
                         value={deadline}
                         />}
                     label={
-                        deadline === "dueToday"
-                        ? "Today"
-                        : deadline === "dueThisWeek"
-                        ? "This Week"
+                        deadline === "dueToday" ? "Today"
+                        : deadline === "dueThisWeek" ? "This Week"
                         : "Next Week"
                     }
                     sx={{ marginRight: 1 }}
@@ -279,7 +289,7 @@ const filterReleventDates = (data) => {
                 ))}
                 <Tooltip title="Remove the filter for dates" arrow>
                 <Chip
-                    label="Due To.."
+                    label="Due To..."
                     onDelete={() => handleRemoveFilter("Dates")}
                     deleteIcon={<CloseIcon />}
                     sx={{ marginTop: 1 }}
@@ -288,6 +298,7 @@ const filterReleventDates = (data) => {
             </Box>
             )}
 
+            {/* Filter Action Button */}
             {selectedFilters.length > 0 && (
                 <Button 
                 variant="contained" 
@@ -302,13 +313,14 @@ const filterReleventDates = (data) => {
         <CompletedTasksTracker completedTasks={completedTasks} totalTasks={tasks.length} />
 
         {filteredTasks !== null && filteredTasks.length === 0 ? (
-            <NoDataMessage message="No results found for these filters." />
-            ) : tasks.length === 0 ? (
-                <NoDataMessage message="No Tasks Yet." />
-            ) : (
-            <TasksList data={filteredTasks || tasks} isLoading={isLoading} /> 
-        )}
+            <NoDataMessage message="No results found for these filters." />) 
+            : tasks.length === 0 ? (
+                <NoDataMessage message="No Tasks Yet." />) 
+            : (
+            <TasksList data={filteredTasks || tasks} isLoading={isLoading} />) 
+        }
 
+        {/* Pop-up Notification */}
         <TaskReminder tasks={filteredTasks || tasks} />
     </>
   );

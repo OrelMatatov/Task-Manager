@@ -17,9 +17,7 @@ const TasksPage = () => {
         <>
         <ProfileMenu user={user}/>
         <AddTask userId={user.user_id}/>
-        <TaskDashboard userId={user.user_id} />
-       
-        {/* <Test userId={user.user_id} />    */}     
+        <TaskDashboard userId={user.user_id} />    
  </>
     )
 }

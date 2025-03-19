@@ -65,7 +65,9 @@ const TaskStatus = ({ status_id, task_id }) => {
     
    
     return (
+        
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {/* Selecting New Status */}
           {isEditing ? (
             <Select
               value={statusId}
@@ -80,12 +82,13 @@ const TaskStatus = ({ status_id, task_id }) => {
 
             </Select>
           ) : (
+            /* Display Current Status */
             <Typography variant="body1" sx={{ cursor: "pointer", color: statusId === 3 ? "green" :"warning.main" }}>
               {data ? data.find(status => status.status_id === statusId)?.status_name || "Unknown" : "Loading..."}
             </Typography>
 
           )}
-            
+            {/* Edit Status Button */}
             <Tooltip title="Update Task Status">
                 <IconButton size="small" onClick={() => setIsEditing(true)}>
                     <EditIcon fontSize="small" />

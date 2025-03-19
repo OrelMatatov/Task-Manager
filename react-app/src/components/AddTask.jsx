@@ -74,7 +74,7 @@ const AddTask = ({ userId }) => {
         }}
         fullWidth
         inputProps={{
-          min: dayjs().format("YYYY-MM-DDTHH:mm"), // Set min to the current date-time
+          min: dayjs().format("YYYY-MM-DDTHH:mm"),
         }}
       />
 

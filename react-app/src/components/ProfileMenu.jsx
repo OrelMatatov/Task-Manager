@@ -39,8 +39,7 @@ const ProfileMenu = ({ user }) => {
         onMouseLeave={handleMenuClose}
       >
 
-        <MenuItem onClick={() => handleMenuClose("Profile")}>Profile</MenuItem>
-        <MenuItem onClick={() => handleMenuClose("EditProfile")}>Edit Profile</MenuItem>
+        <MenuItem onClick={() => handleMenuClose("Profile")}>My Profile</MenuItem>
         <MenuItem onClick={() => handleMenuClose("Disconnect")}>Disconnect</MenuItem>
       </Menu>
     </Box>

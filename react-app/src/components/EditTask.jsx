@@ -62,14 +62,14 @@ const EditTask = ({ task, onClose }) => {
             gap={2}
             p={2}
         >
+            {/* Task Input */}
             <TextField
                 label="Task Name"
                 value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
                 fullWidth
             />
-
-            {/* Compact Date-Time Picker */}
+            {/* Date-Time Picker */}
             <TextField
                 label="Deadline"
                 type="datetime-local"
@@ -79,8 +79,11 @@ const EditTask = ({ task, onClose }) => {
                     shrink: true,
                 }}
                 fullWidth
+                inputProps={{
+                min: dayjs().format("YYYY-MM-DDTHH:mm"), 
+            }}
             />
-
+            {/* Action Button */}
             <Box display="flex" justifyContent="center" gap={3}>
                 <Button variant="contained" color="primary" onClick={handleSave} sx={{ minWidth: 120 }}>
                     Save

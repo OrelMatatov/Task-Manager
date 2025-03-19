@@ -61,7 +61,7 @@ const Task = ({ task, onEdit }) => {
         <strong>Task: </strong> {task.task_name}
       </Typography>
 
-      {/* Status with Edit Icon */}
+      {/* Status  */}
       <Box display="flex" alignItems="center" gap={1}>
         <TaskStatus status_id={task.status_id} task_id={task.task_id} />
       </Box>
@@ -71,7 +71,7 @@ const Task = ({ task, onEdit }) => {
         Due: {dayjs(task.due_date).format("YYYY-MM-DD HH:mm")}
       </Typography>
 
-      {/* Action Buttons - Icons */}
+      {/* Action Buttons */}
       <Tooltip title="Edit this task">
         <IconButton color="primary" size="small" 
           disabled={task.status_id === 3 ? true : false}

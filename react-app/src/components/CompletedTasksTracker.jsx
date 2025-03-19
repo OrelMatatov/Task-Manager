@@ -19,7 +19,7 @@ const CompletedTasksTracker = ({ completedTasks, totalTasks }) => {
             justifyContent="center" 
             alignItems="center" 
             mt={3} 
-            width="95%"
+            width="98%"
         >
             <Typography variant="h6" mr={3}>
                 Completed Tasks: {completedTasks} / {totalTasks}
