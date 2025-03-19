@@ -34,20 +34,20 @@ A simple task management application that helps users track and manage their tas
 
 ## Screenshots
 Tasks Display
-![Tasks Dispay](.react-app/screenshots/screenshot1.png)
+![Tasks Dispay](./react-app/screenshots/screenshot1.png)
 
 Tasks Display With Filtering
-![Tasks Display With Filtering](.react-app/screenshots/screenshot2.png)
-![Tasks Display With Filtering](.react-app/screenshots/screenshot3.png)
+![Tasks Display With Filtering](./react-app/screenshots/screenshot2.png)
+![Tasks Display With Filtering](./react-app/screenshots/screenshot3.png)
 
 Tasks Displayed in Ascending Order by Deadline
-![Tasks Displayed in Ascending Order by Deadline](.react-app/screenshots/screenshot4.png)
+![Tasks Displayed in Ascending Order by Deadline](./react-app/screenshots/screenshot4.png)
 
 Tasks Displayed in Descending Order by Deadline
-![Tasks Displayed in Descending Order by Deadline](.react-app/screenshots/screenshot5.png)
+![Tasks Displayed in Descending Order by Deadline](./react-app/screenshots/screenshot5.png)
 
 Login Page
-![Login Page](.react-app/screenshots/screenshot6.png)
+![Login Page](./react-app/screenshots/screenshot6.png)
 
 Register Page
-![Register Page](.react-app/screenshots/screenshot7.png)
+![Register Page](./react-app/screenshots/screenshot7.png)
