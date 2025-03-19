@@ -33,3 +33,10 @@ A simple task management application that helps users track and manage their tas
 - Clone The repo and run **./install.ps1** - It will install all the dependencies and run the project
 
 ## Screenshots
+![Tasks Dispay](./screenshots/screenshot1.png)
+![Tasks Display With Filtering](./screenshots/screenshot2.png)
+![Tasks Display With Filtering](./screenshots/screenshot3.png)
+![Tasks Displayed in Ascending Order by Deadline](./screenshots/screenshot4.png)
+![Tasks Displayed in Descending Order by Deadline](./screenshots/screenshot5.png)
+![Login Page](./screenshots/screenshot6.png)
+![Register Page](./screenshots/screenshot7.png)
