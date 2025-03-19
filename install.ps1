@@ -1,19 +1,9 @@
-Write-Host "Installing dependencies for client..."
-cd react-app
-npm install
+Write-Host "Installing dependencies and starting the server..."
 
-# Go back to the root directory to install dependencies for the server
-cd ..
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd server; npm install; npm start"
 
-# Install dependencies for the server
-Write-Host "Installing dependencies for server..."
-cd server
-npm install
+Write-Host "Installing dependencies and starting the client..."
 
-Write-Host "Starting the server"
-npm start
-
-Write-Host "Starting the client in a new terminal window..."
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd react-app && npm run dev"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd react-app; npm install; npm run dev"
 
 Write-Host "Installation complete!"
