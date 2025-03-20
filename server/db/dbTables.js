@@ -55,21 +55,5 @@ db.serialize(() => {
             console.log('Values inserted successfully into status table');
         })
 
-    db.run(`
-        INSERT INTO users (email, password) VALUES
-        ('Johndoe@yahoo.com', '12345')    
-    `, (err) => {
-        if(err) return console.error('Error inserting values into users table:', err.message);
-        console.log('Values inserted successfully into users table');
-    })
-
-    db.run(`
-        INSERT INTO tasks(user_id, task_name, status_id, due_date) VALUES
-        (1, 'Finish Project', 1, '2025-03-20'),
-        (1, 'Walk the dog', 2, '2025-03-15') 
-    `, (err) => {
-        if(err) return console.error('Error inserting values into tasks table:', err.message);
-        console.log('Values inserted successfully into tasks table');
-    })
 })
 
